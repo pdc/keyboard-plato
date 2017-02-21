@@ -2,7 +2,7 @@
 
 import unittest
 
-from .kle_parser import parse_kle, json_from_kle
+from .kle_parser import parse_kle, _json_from_kle
 
 
 class TestJsonFromKle(unittest.TestCase):
@@ -11,13 +11,13 @@ class TestJsonFromKle(unittest.TestCase):
     def test_returns_python_stuff(self):
         """Test json_from_kle returns Python stuff."""
         self.assertEqual(
-            json_from_kle('[{a:7},""]'),
+            _json_from_kle('[{a:7},""]'),
             [[{'a': 7}, '']])
 
     def test_fiddlier_example(self):
         """Test json_from_kle can parse a more complex sample."""
         self.assertEqual(
-            json_from_kle("""
+            _json_from_kle("""
             [{y:1,x:12.5},"}\\n]",{x:0.25,w:1.25,h:2,w2:1.5,h2:1,x2:-0.25},"Enter"],
             [{x:12.75},"~\\n#"]
             """),

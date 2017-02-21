@@ -24,23 +24,28 @@ class Key(object):
             self.size2 = size2 or (1, 1)
 
 
-class Keyboard(object):
-    """Information about the keyboard as a whole."""
-
-    pass
-
-
 bare_attr_name = re.compile(r'(?<=[,{])(\w+):')
 
 
-def json_from_kle(kle):
+def _json_from_kle(kle):
     """Convert from KLE’s human-friendly format to echt JSON."""
     return json.loads('[%s]' % bare_attr_name.sub('"\\1":', kle))
 
 
 def parse_kle(kle):
-    """Parse the raw data from the keyboard layout editor."""
-    kss = json_from_kle(kle)
+    """Parse the raw data from the keyboard layout editor.
+
+    Argument – 
+        kle – text in the ‘raw data’ format of Keyboard Layout Editor
+
+    Returns – list of Key instances.
+    """
+    return list(iter_kle(kle))
+
+
+def iter_kle(kle):
+    """Parse the raw data from the keyboard layout editor, yielding Key instances."""
+    kss = _json_from_kle(kle)
     y = 0
     w = h = 1  # Defaults for size
     pos2 = size2 = None

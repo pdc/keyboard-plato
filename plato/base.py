@@ -45,6 +45,25 @@ class Plato(object):
         right = x + 0.5 * width + adjustment
         return left, right
 
+    def key_bbox(self, keys):
+        """Calculate a rectangle that exactly encloses these keys.
+
+        Outer edge aligns with edge of keycaps.
+        Does not adjust for kerf.
+        """
+        # Find boundaries in key units (with y increasing downwards).
+        lf = min(k.x - 0.5 for k in keys)
+        rt = max(k.x + k.w - 0.5 for k in keys)
+        tp = min(k.y - 0.5 for k in keys)
+        bt = max(k.y + k.h - 0.5 for k in keys)
+
+        # Translate in to mm.
+        w = (rt - lf) * self.unit_mm
+        h = (bt - tp) * self.unit_mm
+        x = -0.5 * w
+        y = -0.5 * h
+        return (x, y), (w, h)
+
     def key_coords(self, col, row):
         """Calculate centre of a switch in this column and row in the layout."""
         x = (col - 0.5 * (self.width_in_units - 1)) * self.unit_mm
