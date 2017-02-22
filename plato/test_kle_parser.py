@@ -106,3 +106,4 @@ class TestParseKle(unittest.TestCase):
         self.assertEqual(result[1].size, (1.25, 2))  # Main rect is 2 units tall
         self.assertEqual(result[1].pos2, (13.5, 1))
         self.assertEqual(result[1].size2, (1.5, 1))  # Overlaps the top of the first
+
