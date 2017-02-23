@@ -3,20 +3,12 @@
 from __future__ import print_function, unicode_literals
 import unittest
 
-from .base import Plato, flip_clockwise, translate
+from .base import Plato
 from .kle_parser import Key
 
 
 class TestPlato(unittest.TestCase):
     """Tests for Plato."""
-
-    def test_adjusted_coords_expands_gap(self):
-        """Test Plato adjusted_coords expands gap."""
-        plato = Plato()
-        left, right = plato.adjusted_coords(13, 56, 2.5)
-
-        self.assertAlmostEqual(left, 13 - 28 - 2.5)
-        self.assertAlmostEqual(right, 13 + 28 + 2.5)
 
     def test_calculate_layout_width_height(self):
         """Test Plato calculate_layout works out width and height."""
@@ -72,23 +64,3 @@ class TestPlato(unittest.TestCase):
         x, y = plato.key_coords(Key('q', (2, 1), (1, 1)))  # the q is top left of this 2x2 layout
         self.assertAlmostEqual(x, -16)  # 1 unit to left of centre because 3 keys across
         self.assertAlmostEqual(y, 8)  # half unit above centre because 2 units high
-
-
-class TestFlipCLockwise(unittest.TestCase):
-    """Test flip_clockwise."""
-
-    def test_flip_clockwise(self):
-        """Test flip_clockwise can flip a list of points clockwise."""
-        self.assertEqual(
-            flip_clockwise([(1, 2), (-2, -3)]),
-            [(2, -1), (-3, 2)])
-
-
-class TestTranslate(unittest.TestCase):
-    """Test translate."""
-
-    def test_translate(self):
-        """Test translate can translate points."""
-        self.assertEqual(
-            translate((6, 7), [(1, 2), (-2, -3)]),
-            [(7, 9), (4, 4)])

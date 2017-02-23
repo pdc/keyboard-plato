@@ -18,5 +18,6 @@ if __name__ == '__main__':
     _, size = plato.key_bbox()
     plato.draw_adjusted_round_rect((0, 0), size, radius=0.75)
     for k in keys:
-        plato.cherry_mx_top_hole(k)
+        plato.draw_cherry_mx_under_switch(k)
+        plato.draw_cherry_mx_switch(k)
     plato.save()

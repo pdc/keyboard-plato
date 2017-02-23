@@ -6,6 +6,7 @@ from __future__ import print_function, unicode_literals
 from dxfwrite import DXFEngine as dxf, POLYLINE_CLOSED  # NOQA
 
 from .base import Plato
+from .geometry import adjusted_coords
 
 
 class DXFPlato(Plato):
@@ -32,10 +33,10 @@ class DXFPlato(Plato):
 
         """
         k = self.kerf if is_outside else -self.kerf
-        line_left, line_right = self.adjusted_coords(x, width, -radius)
-        line_bottom, line_top = self.adjusted_coords(y, height, -radius)
-        left, right = self.adjusted_coords(x, width, k)
-        bottom, top = self.adjusted_coords(y, height, k)
+        line_left, line_right = adjusted_coords(x, width, -radius)
+        line_bottom, line_top = adjusted_coords(y, height, -radius)
+        left, right = adjusted_coords(x, width, k)
+        bottom, top = adjusted_coords(y, height, k)
 
         self.drawing.add(dxf.line((line_left, bottom), (line_right, bottom), color=color))
         self.drawing.add(dxf.arc(radius + k, (line_right, line_bottom), 270, 0, color=color))
