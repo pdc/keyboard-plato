@@ -13,7 +13,7 @@ from .geometry import flip_clockwise, translate, rect_points, merge_shapes
 # Adapted from data stolen from kb_builder
 
 STABILIZER_SIZE = (3.3, 14.0)
-UNDER_STABILIZER_SIZE = (3.3, 15.0)
+UNDER_STABILIZER_SIZE = (3.3, 15.5)
 
 STABILIZER_X_OFFSETS = {
     2: 11.95,
@@ -39,11 +39,13 @@ class Plato(object):
 
     kerf = 0.18  # http://www.cutlasercut.com/resources/tips-and-advice/what-is-laser-kerf
     cherry_mx_hole_size = 14.0  # Width and height of standard hole for CHerry MX switch.
+    clip_width = 0.75
     width_in_units = None  # Width of the layout in key units.
     height_in_units = None  # Height of the keyboard in units (= numberof rows).
     centre_col = None  # Centre of layout in units.
     centre_row = None  # Centre of layout in units.
     unit_mm = 19  # Size of a unit. The official standard is 19.05 mm but 19 mm is close enough.
+    padding = (3.5, 3.5)  # Added to outside of keys
 
     def __init__(self, file_path='out.dxf', kerf=None, size_in_units=None,
                  width_in_units=None, height_in_units=None,
@@ -119,7 +121,7 @@ class Plato(object):
         """
         switch_shape = merge_shapes(
             rect_points((0, 0), (self.cherry_mx_hole_size, self.cherry_mx_hole_size), -self.kerf),
-            rect_points((0, 0), (5, self.cherry_mx_hole_size + 2 * 0.5), -self.kerf),
+            rect_points((0, 0), (5, self.cherry_mx_hole_size + 2 * 0.75), -self.kerf),
         )
         self.draw_switch_and_stablizers(key, switch_shape, stabilizer_size=UNDER_STABILIZER_SIZE, color=color)
 
@@ -132,8 +134,8 @@ class Plato(object):
             # Also draw stabilizers.
             stab_x = STABILIZER_X_OFFSETS.get(max(key.w, key.h))
             zss.extend([
-                rect_points((stab_x, STABILIZER_Y_OFFSET), STABILIZER_SIZE, -self.kerf),
-                rect_points((-stab_x, STABILIZER_Y_OFFSET), STABILIZER_SIZE, -self.kerf),
+                rect_points((stab_x, STABILIZER_Y_OFFSET), stabilizer_size, -self.kerf),
+                rect_points((-stab_x, STABILIZER_Y_OFFSET), stabilizer_size, -self.kerf),
             ])
             if key.h > key.w:
                 zss = [flip_clockwise(zs) for zs in zss]
