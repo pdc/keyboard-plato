@@ -5,7 +5,7 @@ import unittest
 
 from .geometry import (
     adjusted_coords, flip_clockwise, translate, rect_points, merge_shapes,
-    segments)
+    segments, screw_holes)
 
 
 class TestAdjustedCoords(unittest.TestCase):
@@ -66,3 +66,24 @@ class TestMergeShapes(unittest.TestCase):
                 (2, -1), (1, -1), (1, -3), (-1, -3), (-1, -1),
             ]
         )
+
+
+class TestScrewHoles(unittest.TestCase):
+    """Test screw_holes."""
+
+    def test_places_four_scres_at_corners(self):
+        """Test screw_holes places four screws at corners."""
+        self.assertEqual(set(screw_holes(4, (90, 50))), {(-45, -25), (45, -25), (45, 25), (-45, 25)})
+
+    def test_adds_screws_to_top_and_bottom_with_six(self):
+        """Test screw_holes places four screws at corners."""
+        self.assertEqual(set(screw_holes(6, (90, 50))), {
+            (0, -25), (0, 25),
+            (-45, -25), (45, -25), (45, 25), (-45, 25)})
+
+    def test_adds_on_all_sides_with_ten(self):
+        """Test screw_holes places four screws at corners."""
+        self.assertEqual(set(screw_holes(12, (90, 50))), {
+            (-45, 0), (45, 0),
+            (-15, -20), (15, -20), (-15, 20), (15, 20),
+            (-45, -20), (45, -20), (45, 20), (-45, 20)})

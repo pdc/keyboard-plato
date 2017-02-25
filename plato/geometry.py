@@ -123,3 +123,26 @@ def merge_shapes(*zss):
 
         ((x1, y1), (x2, y2)) = seg = next
     return result
+
+
+def screw_points(n, (wd, ht)):
+    """Return centres of holes for screws evenly distributed around rect.
+
+    Arguments –
+        n – total numer of screws; must be an even numebr ≥ 4
+        wd, ht – size of rect the centres of the holes are to be distributed
+    """
+    left, right = -0.5 * wd, 0.5 * wd
+    bottom, top = -0.5 * ht, 0.5 * ht
+    rem = (n - 4) // 2  # How many to split between sides.
+    print('rem', rem)
+    vert_count = int(max(0, round(ht * rem - wd) / (wd + ht)))
+    # According to some scribbles I made on paper.
+    print(left, right, bottom, top, vert_count)
+    zs = [(x, i * ht / float(vert_count + 1) - 0.5 * ht) for i in range(1, vert_count + 1) for x in (left, right)]
+    print(zs)
+    horiz_count = rem - vert_count
+    print(horiz_count)
+    zs.extend((i * wd / float(horiz_count + 1) - 0.5 * wd, y) for i in range(0, horiz_count + 2) for y in (bottom, top))
+
+    return zs

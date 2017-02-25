@@ -15,14 +15,12 @@ if __name__ == '__main__':
     keys = parse_kle(kle)
 
     for name in 'plate', 'under', 'test':
-        plato = DXFPlato('%s.dxf' % name)
+        plato = DXFPlato('%s.dxf' % name, case_thickness=6, padding=3.5, corner_radius=3, kerf=0.18)
         plato.calculate_layout(keys)
-        _, (w, h) = plato.key_bbox()
-        plato.draw_adjusted_round_rect((0, 0), (w + 7, h + 7), radius=3)
+        plato.draw_outside()
         if name in ['plate', 'test']:
-            for k in keys:
-                plato.draw_cherry_mx_switch(k)
+            plato.draw_cherry_mx_switches(keys)
         if name in ['under', 'test']:
-            for k in keys:
-                plato.draw_cherry_mx_under_switch(k)
+            plato.draw_cherry_mx_under_switches(keys)
+        plato.draw_screws(8, indent=3)
         plato.save()
