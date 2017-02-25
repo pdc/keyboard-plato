@@ -95,21 +95,21 @@ class Plato(object):
 
         Caller is responsible for adjusting the outline to allow for kerf.
         """
-        raise NotImplementedError('%s: needs draw_polygon' % self.__class__.name)
+        raise NotImplementedError('%s: needs draw_polygon' % self.__class__.__name__)
 
     def draw_circle(self, point, radius, **kwargs):
         """Draw a circular hole or well.
 
         Caller is responsible for adjusting the outline to allow for kerf.
         """
-        raise NotImplementedError('%s: needs draw_circle' % self.__class__.name)
+        raise NotImplementedError('%s: needs draw_circle' % self.__class__.__name__)
 
     def draw_roundrect(self, point, size, radius, **kwargs):
         """Draw a rect centered at point with size and corner radius.
 
         Caller is responsible for adjusting the outline to allow for kerf.
         """
-        raise NotImplementedError('%s: needs draw_roundrect' % self.__class__.name)
+        raise NotImplementedError('%s: needs draw_roundrect' % self.__class__.__name__)
 
     def draw_outside_roundrect(self, (x, y), (width, height), radius, kerf=None, **kwargs):
         """Draw a rounded rect adjusted for kerf.
