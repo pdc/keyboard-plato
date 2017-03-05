@@ -14,14 +14,15 @@ class Key(object):
 
     def __init__(self, label, pos, size, pos2=None, size2=None):
         """Create instance with this key data."""
+        self.label = label
         self.pos = pos
         self.x, self.y = pos
         self.size = size
         self.w, self.h = size
         if pos2 or size2:
             x2, y2 = pos2 or (0, 0)
-            self.pos2 = (x2 + self.x, y2 + self.y)
-            self.size2 = size2 or (1, 1)
+            self.x2, self.y2 = self.pos2 = (x2 + self.x, y2 + self.y)
+            self.w2, self.h2 = self.size2 = size2 or (1, 1)
 
 
 bare_attr_name = re.compile(r'(?<=[,{])(\w+):')

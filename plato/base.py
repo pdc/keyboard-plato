@@ -180,16 +180,18 @@ class Plato(object):
         y = -(key.y - self.centre_row + 0.5 * key.h) * self.unit_mm
         return x, y
 
-    def draw_cherry_mx_switches(self, keys, color=7):
+    def draw_cherry_mx_switches(self, keys, color=None):
         """The hole in to which a Cherry MX switch will be clipped.
 
         Should be 1.5 mm thick.
         """
         switch_shape = rect_points((0, 0), (self.cherry_mx_hole_size, self.cherry_mx_hole_size), -self.kerf)
         for key in keys:
-            self.draw_switch_and_stablizers(key, switch_shape, stabilizer_size=STABILIZER_SIZE, color=color)
+            self.draw_switch_and_stablizers(
+                key, switch_shape, stabilizer_size=STABILIZER_SIZE,
+                color=(color or self.stroke_default))
 
-    def draw_cherry_mx_under_switches(self, keys, color=6):
+    def draw_cherry_mx_under_switches(self, keys, color=None):
         """For part of chery switch under the plate.
 
         Should be 1up to 3.5 mm thick.
@@ -199,9 +201,23 @@ class Plato(object):
             rect_points((0, 0), (5, self.cherry_mx_hole_size + 2 * 0.75), -self.kerf),
         )
         for key in keys:
-            self.draw_switch_and_stablizers(key, switch_shape, stabilizer_size=UNDER_STABILIZER_SIZE, color=color)
+            self.draw_switch_and_stablizers(
+                key, switch_shape, stabilizer_size=UNDER_STABILIZER_SIZE,
+                color=(color or self.stroke_default))
 
-    def draw_switch_and_stablizers(self, key, switch_shape, stabilizer_size, color=7):
+    def draw_key_caps(self, keys, color=None):
+        """Draw outlines of the key caps."""
+        for key in keys:
+            zs = rect_points((0, 0), (key.w * self.unit_mm, key.h * self.unit_mm))
+            if hasattr(key, 'x2'):
+                # Offset of second rect is measured between their top-left corners
+                # in keyboard units, with y downwards.
+                x2 = (0.5 * (key.w2 - key.w) + key.x2 - key.x) * self.unit_mm
+                y2 = (0.5 * (key.h2 - key.h) + key.y2 - key.y) * -self.unit_mm
+                zs = merge_shapes(zs, rect_points((x2, y2), (key.w2 * self.unit_mm, key.h2 * self.unit_mm)))
+            self.draw_polygon(translate(self.key_coords(key), zs), color=(color or self.stroke_alt))
+
+    def draw_switch_and_stablizers(self, key, switch_shape, stabilizer_size, color=None):
         """Draw the switch for this key, andits stabilizers if any."""
         # Build collection of shapes centerd on switch.
         zss = [switch_shape]
@@ -220,7 +236,7 @@ class Plato(object):
         x, y = self.key_coords(key)
         zss = [translate((x, y), zs) for zs in zss]
         for zs in zss:
-            self.draw_polygon(zs)
+            self.draw_polygon(zs, color=(color or self.stroke_default))
 
     def draw_outside(self):
         """Draw the outside edge of the keyboard."""
@@ -233,11 +249,22 @@ class Plato(object):
 
         Arguments –
             n – how many screw holes; must be an even number ≥ 4
+            radius – nominal radius of thread (e.g., 1 for an M2 screw)
             indent – distance between edge of case and screw; default is one-half case case_thickness
         """
         for z in self.screw_points(n, indent):
             self.draw_circle(z, radius - self.kerf)
-            # self.draw_circle(z, 2, color=1)
+
+    def draw_screw_heads(self, n=6, radius=2, indent=None, color=None, **kwargs):
+        """Draw heads of screws.
+
+        Arguments –
+            n – how many screw holes; must be an even number ≥ 4
+            radius – of head
+            indent – distance between edge of case and screw; default is one-half case case_thickness
+        """
+        for z in self.screw_points(n, indent):
+            self.draw_circle(z, radius + self.kerf, color=(color or self.stroke_alt), **kwargs)
 
     def screw_points(self, n=6, indent=None):
         """Calculate location of screws."""

@@ -14,7 +14,8 @@ SVG_NS = 'http://www.w3.org/2000/svg'
 class SVGPlato(Plato):
     """Keyboard plate drawing class that writes SVG."""
 
-    default_colour = 'rgba(0, 0, 0, 0.8)'
+    stroke_default = 'rgba(0, 0, 0, 0.8)'
+    stroke_alt = 'rgba(%d, %d, %d, 0.8)' % (0xBB, 0x00, 0xAA)
 
     def __init__(self, file=None, **kwargs):
         """Create instance with nothing in it."""
@@ -27,7 +28,7 @@ class SVGPlato(Plato):
         # Flip the y axis so it goes up not down.
         self.g = ElementTree.SubElement(self.elt, 'g', {
             'transform': 'scale(1, -1)',
-            'stroke': self.default_colour,
+            'stroke': self.stroke_default,
             'stroke-width': str(2 * self.kerf),
             'stroke-linejoin': 'round',
             'fill': 'none',
@@ -40,7 +41,7 @@ class SVGPlato(Plato):
 
     def draw_roundrect(self, (x, y), (wd, ht), radius, color=None):
         """Draw a rounded rectangle centred on (x, y) with this size and corner radius."""
-        ElementTree.SubElement(self.g, 'rect', {
+        e = ElementTree.SubElement(self.g, 'rect', {
             'x': str(x - 0.5 * wd),
             'y': str(y - 0.5 * ht),
             'width': str(wd),
@@ -48,6 +49,8 @@ class SVGPlato(Plato):
             'rx': str(radius),
             'ry': str(radius),
         })
+        if color:
+            e.set('stroke', color)
 
     def draw_polygon(self, points, color=None):
         """Draw closed polygon through these vertices."""
@@ -55,17 +58,21 @@ class SVGPlato(Plato):
             ','.join('%f' % v for v in points[0]),
             ' '.join(','.join('%f' % v for v in z) for z in points[1:]),
         )
-        ElementTree.SubElement(self.g, 'path', {
+        e = ElementTree.SubElement(self.g, 'path', {
             'd': d,
         })
+        if color:
+            e.set('stroke', color)
 
     def draw_circle(self, (x, y), radius, color=None):
         """Draw cirlce centred on x,y with this radius."""
-        ElementTree.SubElement(self.g, 'circle', {
+        e = ElementTree.SubElement(self.g, 'circle', {
             'cx': str(x),
             'cy': str(y),
             'r': str(radius),
         })
+        if color:
+            e.set('stroke', color)
 
     def calculate_layout(self, keys, **kwargs):
         """Calculate size of keyboard based on the layout."""
