@@ -34,10 +34,9 @@ Create a Python [virtualenv][] with [virtualenvwrapper][] or otherwise and insta
 
 Now run the command that writes the plate.
 
-    ./write_plate.py
+    ./write_plate.py x1.kle
 
-The driver command `write_plate.py` does not yet have arguments; instead it is hard-coded
-to read `x1.kle` and generate DXF and SVG files for the plate,
+This reads `x1.kle` and generate sDXF and SVG files for the plate,
 the under-plate, an indicative diagram of the key cap outlines,
 and a combined image that shows what the combination
 might look like. The DXF version is hard to display if you don’t have
@@ -47,8 +46,19 @@ and pan with your browser’s ususal controls.
 
 The SVG version sets the line widths to a representative _kerf_ width,
 that is, it represents the thin slice of material that is destroyed by
-the laser. The effectinve edge of the holes will therefore be the outer
+the laser. The effective edge of the holes will therefore be the outer
 edge of the outline of the hole.
+
+There is also an option to create a size tester—useful to calibrate the
+cutting tool you are using.
+
+    ./write_plate -t size
+
+This draws 11 key switches with kerf value ranging from -0.20 to 0.50.
+Negative kerf does not make literal sense but has the effect of widening the
+hole to larger than the expected 14mm in case loose fitting turns out to be
+useful.
+
 
   [Keyboard CAD Assistant]: http://www.keyboardcad.com/
   [Keyboard Layout Editor]: http://www.keyboard-layout-editor.com/
