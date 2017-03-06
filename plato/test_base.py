@@ -35,6 +35,17 @@ class TestPlato(unittest.TestCase):
         self.assertAlmostEqual(x, -7 * 19)
         self.assertAlmostEqual(y, -3 * 19)  # Bottom left
 
+    def test_key_bbox_sans_keys(self):
+        """Test key_bbox of a list of keys is centred on 0,0."""
+        plato = Plato(unit_mm=19, width_in_units=10, height_in_units=3)
+
+        (x, y), (wd, ht) = plato.key_bbox()
+
+        self.assertAlmostEqual(wd, 10 * 19)  # As supplied by caller
+        self.assertAlmostEqual(ht, 3 * 19)
+        self.assertAlmostEqual(x, -5 * 19)
+        self.assertAlmostEqual(y, -1.5 * 19)
+
     def test_key_coords_of_0_0_is_top_left(self):
         """Test Plato key_coords of (0, 0) is top left."""
         # Define a 3×2 layout.

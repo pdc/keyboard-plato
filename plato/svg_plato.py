@@ -34,6 +34,9 @@ class SVGPlato(Plato):
             'fill': 'none',
         })
 
+        if self.width_in_units:
+            self._set_viewbox()
+
     def save(self, file=None):
         """Write SVG representation of the graphics to this file."""
         tree = ElementTree.ElementTree(self.elt)
@@ -77,6 +80,9 @@ class SVGPlato(Plato):
     def calculate_layout(self, keys, **kwargs):
         """Calculate size of keyboard based on the layout."""
         super(SVGPlato, self).calculate_layout(keys, **kwargs)
+        self._set_viewbox()
+
+    def _set_viewbox(self):
         # Calculate viewBox.
         _, (wd, ht) = self.key_bbox()
         # Enlarge the drawing

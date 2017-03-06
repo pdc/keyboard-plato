@@ -69,8 +69,12 @@ class Plato(object):
             self.width_in_units, self.height_in_units = size_in_units
         if centre_col is not None:
             self.centre_col = centre_col
+        else:
+            self.centre_col = self.width_in_units * 0.5
         if centre_row is not None:
             self.centre_row = centre_row
+        else:
+            self.centre_row = self.height_in_units * 0.5
         if unit_mm:
             self.unit_mm = unit_mm
         if padding:
@@ -171,7 +175,6 @@ class Plato(object):
         h = self.height_in_units * self.unit_mm
         x = -self.centre_col * self.unit_mm
         y = -self.centre_row * self.unit_mm
-
         return (x, y), (w, h)
 
     def key_coords(self, key):
@@ -180,25 +183,27 @@ class Plato(object):
         y = -(key.y - self.centre_row + 0.5 * key.h) * self.unit_mm
         return x, y
 
-    def draw_cherry_mx_switches(self, keys, color=None):
+    def draw_cherry_mx_switches(self, keys, kerf=None, color=None):
         """The hole in to which a Cherry MX switch will be clipped.
 
         Should be 1.5 mm thick.
         """
-        switch_shape = rect_points((0, 0), (self.cherry_mx_hole_size, self.cherry_mx_hole_size), -self.kerf)
+        k = (self.kerf if kerf is None else kerf)
+        switch_shape = rect_points((0, 0), (self.cherry_mx_hole_size, self.cherry_mx_hole_size), -k)
         for key in keys:
             self.draw_switch_and_stablizers(
                 key, switch_shape, stabilizer_size=STABILIZER_SIZE,
                 color=(color or self.stroke_default))
 
-    def draw_cherry_mx_under_switches(self, keys, color=None):
+    def draw_cherry_mx_under_switches(self, keys, kerf=None, color=None):
         """For part of chery switch under the plate.
 
         Should be 1up to 3.5 mm thick.
         """
+        k = (self.kerf if kerf is None else kerf)
         switch_shape = merge_shapes(
-            rect_points((0, 0), (self.cherry_mx_hole_size, self.cherry_mx_hole_size), -self.kerf),
-            rect_points((0, 0), (5, self.cherry_mx_hole_size + 2 * 0.75), -self.kerf),
+            rect_points((0, 0), (self.cherry_mx_hole_size, self.cherry_mx_hole_size), -k),
+            rect_points((0, 0), (5, self.cherry_mx_hole_size + 2 * 0.75), -k),
         )
         for key in keys:
             self.draw_switch_and_stablizers(

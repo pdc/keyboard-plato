@@ -92,6 +92,10 @@ def merge_shapes(*zss):
             result.append(z0)
         z, zs = nearest_intersections((z0, z1), segs)
         z0, z1 = leftmost_turn((z0, z1), z, zs)
+
+        z0 = (round(z0[0], 3), round(z0[1], 3))
+        z1 = (round(z1[0], 3), round(z1[1], 3))
+
         if z0 == result[0]:
             break
     if len(result) > 2 and are_colinear(result[-2], result[-1], result[0]):
