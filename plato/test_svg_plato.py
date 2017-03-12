@@ -18,7 +18,7 @@ class TestSVGPlato(unittest.TestCase):
         plato.calculate_layout([Key('q', (0, 0), (1, 1)), Key('s', (1.25, 1), (1, 1))])
 
         # Expect
-        w, h = 2.25 * 20 + 10 + 1, 2 * 20 + 10 + 1
+        w, h = 1 + 5 + 2.25 * 20 + 5 + 1, 1 + 5 + 2 * 20 + 5 + 1
         self.assertEqual(plato.elt.attrib['width'], '%fmm' % w)
         self.assertEqual(plato.elt.attrib['height'], '%fmm' % h)
         self.assertEqual(plato.elt.attrib['viewBox'], '%f %f %f %f' % (-0.5 * w, -0.5 * h, w, h))

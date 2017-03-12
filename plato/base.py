@@ -71,11 +71,11 @@ class Plato(object):
             self.width_in_units, self.height_in_units = size_in_units
         if centre_col is not None:
             self.centre_col = centre_col
-        else:
+        elif self.width_in_units:
             self.centre_col = self.width_in_units * 0.5
         if centre_row is not None:
             self.centre_row = centre_row
-        else:
+        elif self.height_in_units:
             self.centre_row = self.height_in_units * 0.5
         if unit_mm:
             self.unit_mm = unit_mm
