@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+# -* coding: UTF-8 -*-
 
 """Script to generate a DXF file."""
 
@@ -39,7 +40,8 @@ def write_plate(keys, format, layer, out_file):
 
 def write_tester(format, layer, out_file):
     """Write plate with these keys to this file."""
-    plato = FORMAT_CLASSES[format](out_file,
+    plato = FORMAT_CLASSES[format](
+        out_file,
         width_in_units=15, height_in_units=2, unit_mm=19,
         case_thickness=3.5, padding=1, corner_radius=2, kerf=0.18)
     plato.draw_outside()
@@ -77,6 +79,7 @@ def arg_parser():
         '--verbose', '-v', action='store_true',
         help='write more messages')
     return parser
+
 
 def unpack_list_option(what, wordss, permitted_words):
     """Given a list of comma-separated keywords return list of words.
@@ -117,6 +120,7 @@ def main(argv=None):
                 write_plate(keys, out_file=out_file, format=format, layer=layer)
                 if options.verbose:
                     print('Wrote', format.upper(), 'to', out_file)
+
 
 if __name__ == '__main__':
     sys.exit(main())

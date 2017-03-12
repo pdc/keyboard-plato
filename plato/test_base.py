@@ -1,3 +1,5 @@
+# -* coding: UTF-8 -*-
+
 """Tests for Plato base class."""
 
 from __future__ import print_function, unicode_literals

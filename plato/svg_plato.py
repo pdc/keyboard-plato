@@ -1,4 +1,4 @@
-# -*- coding: UTF-8 -*-
+# -* coding: UTF-8 -*-
 
 """Subclass of Plato that renders as SVG."""
 

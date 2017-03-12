@@ -1,3 +1,5 @@
+# -* coding: UTF-8 -*-
+
 """Object for generating drawings of keyboard plates."""
 
 from __future__ import print_function, unicode_literals

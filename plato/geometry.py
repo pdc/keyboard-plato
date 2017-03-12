@@ -1,3 +1,5 @@
+# -* coding: UTF-8 -*-
+
 """Claculating simple geometry.
 
 Most shapes in this diagram are composed of vertical and horizontal lines.

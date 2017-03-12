@@ -1,3 +1,5 @@
+# -* coding: UTF-8 -*-
+
 """Tests for kle_parser."""
 
 import unittest

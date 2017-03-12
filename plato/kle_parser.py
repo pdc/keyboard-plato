@@ -1,3 +1,5 @@
+# -* coding: UTF-8 -*-
+
 """Parse the ‘raw data’ format of the Keyboard Layout Editor.
 
 https://github.com/ijprest/keyboard-layout-editor/wiki/Serialized-Data-Format
