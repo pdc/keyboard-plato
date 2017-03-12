@@ -56,8 +56,8 @@ cutting tool you are using.
 
 This draws 11 key switches with kerf value ranging from -0.20 to 0.50.
 Negative kerf does not make literal sense but has the effect of widening the
-hole to larger than the expected 14mm in case loose fitting turns out to be
-useful.
+hole to larger than the expected 14mm so we can be sure the range of sizes
+definitely goes from too loose to too tight.
 
 
   [Keyboard CAD Assistant]: http://www.keyboardcad.com/
