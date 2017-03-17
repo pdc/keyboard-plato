@@ -22,3 +22,21 @@ class TestSVGPlato(unittest.TestCase):
         self.assertEqual(plato.elt.attrib['width'], '%fmm' % w)
         self.assertEqual(plato.elt.attrib['height'], '%fmm' % h)
         self.assertEqual(plato.elt.attrib['viewBox'], '%f %f %f %f' % (-0.5 * w, -0.5 * h, w, h))
+
+    def test_uses_relative_moves(self):
+        """Test SVGPlato uses relative moves."""
+        plato = SVGPlato()
+
+        plato.draw_polygon([(-10, -7), (-10, 7), (10, 7), (10, -7)])
+        result = plato.g[-1].attrib['d']
+
+        self.assertEquals(result, 'M-10,-7v14h20v-14z')
+
+    def test_can_also_do_diagonal_moves(self):
+        """Test SVGPlato can also do diagonal moves."""
+        plato = SVGPlato()
+
+        plato.draw_polygon([(1, 2), (2, 5), (3, 4), (4, 2)])
+        result = plato.g[-1].attrib['d']
+
+        self.assertEquals(result, 'M1,2l1,3l1,-1l1,-2z')

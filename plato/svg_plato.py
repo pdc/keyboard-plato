@@ -52,20 +52,27 @@ class SVGPlato(Plato):
             'rx': str(radius),
             'ry': str(radius),
         })
-        if color:
-            e.set('stroke', color)
+        self.frig(e, color)
 
     def draw_polygon(self, points, color=None):
         """Draw closed polygon through these vertices."""
-        d = 'M%sL%sZ' % (
-            ','.join('%f' % v for v in points[0]),
-            ' '.join(','.join('%f' % v for v in z) for z in points[1:]),
-        )
+        x0, y0 = points[0]
+        parts = ['M%s,%s' % (x0, y0)]
+        for x, y in points[1:]:
+            if x == x0:
+                parts.append('v%s' % (y - y0))
+            elif y == y0:
+                parts.append('h%s' % (x - x0))
+            else:
+                parts.append('l%s,%s' % (x - x0, y - y0))
+            x0, y0 = x, y
+        parts.append('z')
+        d = ''.join(parts)
+
         e = ElementTree.SubElement(self.g, 'path', {
             'd': d,
         })
-        if color:
-            e.set('stroke', color)
+        self.frig(e, color)
 
     def draw_circle(self, (x, y), radius, color=None):
         """Draw cirlce centred on x,y with this radius."""
@@ -74,7 +81,10 @@ class SVGPlato(Plato):
             'cy': str(y),
             'r': str(radius),
         })
-        if color:
+        self.frig(e, color)
+
+    def frig(self, e, color):
+        if color and color != self.stroke_default:
             e.set('stroke', color)
 
     def calculate_layout(self, keys, **kwargs):
