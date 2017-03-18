@@ -14,8 +14,12 @@ from .geometry import flip_clockwise, translate, rect_points, merge_shapes, scre
 
 # Adapted from data stolen from kb_builder
 
-STABILIZER_SIZE = (3.3, 14.0)
-UNDER_STABILIZER_SIZE = (3.3, 15.5)
+CLIP_WIDTH = 0.75
+
+CHERRY_MX_HOLE_SIZE = 13.95  # Measured the switch.
+
+STABILIZER_SIZE = (3.3, 14.2)  # Seems to want a little more slack than the 14mm usually suggested.
+UNDER_STABILIZER_SIZE = (3.3, 14.2 + CLIP_WIDTH)
 
 STABILIZER_X_OFFSETS = {
     2: 11.95,
@@ -42,8 +46,8 @@ class Plato(object):
     """Abstract base for plate-drawing classes."""
 
     kerf = 0.18  # http://www.cutlasercut.com/resources/tips-and-advice/what-is-laser-kerf
-    cherry_mx_hole_size = 14.0  # Width and height of standard hole for CHerry MX switch.
-    clip_width = 0.75
+    cherry_mx_hole_size = CHERRY_MX_HOLE_SIZE  # Width and height of standard hole for CHerry MX switch.
+    clip_width = CLIP_WIDTH
     width_in_units = None  # Width of the layout in key units.
     height_in_units = None  # Height of the keyboard in units (= numberof rows).
     centre_col = None  # Centre of layout in units.
@@ -52,6 +56,11 @@ class Plato(object):
     padding = (0, 0)  # Added to outside of keys
     case_thickness = (-MIN_PADDING, -MIN_PADDING)
     corner_radius = 3.5
+
+    # Colour specifications that must be overridden in subclass.
+    stroke_default = None
+    stroke_alt = None
+
 
     def __init__(self, file_path='out.dxf',
                  kerf=None,
@@ -267,7 +276,7 @@ class Plato(object):
             if key.h > key.w:
                 zss = [flip_clockwise(zs) for zs in zss]
 
-        self.draw_switch_shapes(key, zss)
+        self.draw_switch_polygons(key, zss)
 
     def draw_switch_polygons(self, key, polygons, color=None):
         """Draw the shapes at the correct position for the given key."""

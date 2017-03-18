@@ -24,7 +24,8 @@ FORMAT_CLASSES = {
 
 def write_plate(keys, format, layer, out_file):
     """Write plate with these keys to this file."""
-    plato = FORMAT_CLASSES[format](out_file, case_thickness=5, padding=5, corner_radius=3, kerf=0.18)
+    padding = 4
+    plato = FORMAT_CLASSES[format](out_file, case_thickness=padding, padding=padding, corner_radius=(padding / 2), kerf=0.17)
     plato.calculate_layout(keys)
     plato.draw_outside()
     if layer in ['plate', 'combined']:
@@ -34,10 +35,10 @@ def write_plate(keys, format, layer, out_file):
     if layer in ['clips']:
         plato.draw_cherry_mx_switch_clips(keys)
     if layer in ['caps', 'combined', 'clips']:
-        plato.draw_screw_heads(8, indent=2.5)
+        plato.draw_screw_heads(8, indent=(padding / 2))
     if layer in ['caps', 'combined']:
         plato.draw_key_caps(keys)
-    plato.draw_screws(8, indent=2.5)
+    plato.draw_screws(8, indent=(padding / 2))
     plato.save()
 
 
