@@ -205,12 +205,40 @@ class Plato(object):
         k = (self.kerf if kerf is None else kerf)
         switch_shape = merge_shapes(
             rect_points((0, 0), (self.cherry_mx_hole_size, self.cherry_mx_hole_size), -k),
-            rect_points((0, 0), (5, self.cherry_mx_hole_size + 2 * 0.75), -k),
+            rect_points((0, 0), (5, self.cherry_mx_hole_size + 2 * self.clip_width), -k),
         )
         for key in keys:
             self.draw_switch_and_stablizers(
                 key, switch_shape, stabilizer_size=UNDER_STABILIZER_SIZE,
                 color=(color or self.stroke_default))
+
+    def draw_cherry_mx_switch_clips(self, keys, kerf=None, color=None):
+        """The part of the under plate that is not the hole for the switch proper.
+
+        Should be up to 3.5 mm thick.
+        """
+        k = (self.kerf if kerf is None else kerf)
+        y = 0.5 * (self.cherry_mx_hole_size + self.clip_width)
+        switch_polygons = [
+            rect_points((0, -y), (5, self.clip_width), -k),
+            rect_points((0, y), (5, self.clip_width), -k),
+        ]
+        stab_wd, stab_ht = STABILIZER_SIZE
+        for key in keys:
+            polygons = switch_polygons
+            if key.w >= 2 or key.h >= 2:
+                # Also draw stabilizers.
+                stab_x = STABILIZER_X_OFFSETS.get(max(key.w, key.h))
+                stab_y = 0.5 * (stab_ht + self.clip_width)
+                polygons = polygons + [
+                    rect_points((stab_x, STABILIZER_Y_OFFSET - stab_y), (stab_wd, self.clip_width), -k),
+                    rect_points((-stab_x, STABILIZER_Y_OFFSET - stab_y), (stab_wd, self.clip_width), -k),
+                    rect_points((stab_x, STABILIZER_Y_OFFSET + stab_y), (stab_wd, self.clip_width), -k),
+                    rect_points((-stab_x, STABILIZER_Y_OFFSET + stab_y), (stab_wd, self.clip_width), -k),
+                ]
+                if key.h > key.w:
+                    polygons = [flip_clockwise(zs) for zs in polygons]
+            self.draw_switch_polygons(key, polygons, color=color)
 
     def draw_key_caps(self, keys, color=None):
         """Draw outlines of the key caps."""
@@ -239,9 +267,13 @@ class Plato(object):
             if key.h > key.w:
                 zss = [flip_clockwise(zs) for zs in zss]
 
+        self.draw_switch_shapes(key, zss)
+
+    def draw_switch_polygons(self, key, polygons, color=None):
+        """Draw the shapes at the correct position for the given key."""
         # Now draw in correct location.
         x, y = self.key_coords(key)
-        zss = [translate((x, y), zs) for zs in zss]
+        zss = [translate((x, y), zs) for zs in polygons]
         for zs in zss:
             self.draw_polygon(zs, color=(color or self.stroke_default))
 

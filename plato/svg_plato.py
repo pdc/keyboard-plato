@@ -56,6 +56,8 @@ class SVGPlato(Plato):
 
     def draw_polygon(self, points, color=None):
         """Draw closed polygon through these vertices."""
+        # We do so many short vertical and horisontal lines we can
+        # reduce the size of the path data a lot by using ‘h’ abd ‘v’ commands.
         x0, y0 = points[0]
         parts = ['M%s,%s' % (x0, y0)]
         for x, y in points[1:]:

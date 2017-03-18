@@ -13,7 +13,7 @@ from plato.kle_parser import Key, parse_kle
 
 
 FORMATS = ['svg', 'dxf']
-LAYERS = ['plate', 'under', 'caps', 'combined']
+LAYERS = ['plate', 'under', 'caps', 'clips', 'combined']
 TESTS = ['size']
 
 FORMAT_CLASSES = {
@@ -31,8 +31,11 @@ def write_plate(keys, format, layer, out_file):
         plato.draw_cherry_mx_switches(keys)
     if layer in ['under', 'combined']:
         plato.draw_cherry_mx_under_switches(keys)
-    if layer in ['caps', 'combined']:
+    if layer in ['clips']:
+        plato.draw_cherry_mx_switch_clips(keys)
+    if layer in ['caps', 'combined', 'clips']:
         plato.draw_screw_heads(8, indent=2.5)
+    if layer in ['caps', 'combined']:
         plato.draw_key_caps(keys)
     plato.draw_screws(8, indent=2.5)
     plato.save()
@@ -52,9 +55,11 @@ def write_tester(format, layer, out_file):
             plato.draw_cherry_mx_switches([key], kerf=k)
         if layer in ['under', 'combined']:
             plato.draw_cherry_mx_under_switches([key], kerf=k)
+        if layer in ['clips']:
+            plato.draw_cherry_mx_switch_clips([key])
         if layer in ['caps', 'combined']:
             plato.draw_key_caps([key])
-    if layer in ['caps', 'combined']:
+    if layer in ['caps', 'combined', 'clips']:
         plato.draw_screw_heads(8, indent=2)
     plato.draw_screws(8, indent=2)
     plato.save()
