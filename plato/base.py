@@ -62,7 +62,7 @@ class Plato(object):
     stroke_alt = None
 
 
-    def __init__(self, file_path='out.dxf',
+    def __init__(self,
                  kerf=None,
                  size_in_units=None,
                  width_in_units=None, height_in_units=None,
@@ -150,13 +150,12 @@ class Plato(object):
         k = -(kerf or self.kerf)
         self.draw_roundrect((x, y), (width + 2 * k, height + 2 * k), radius + k, **kwargs)
 
-    def draw_inside_rect(self, (x, y), (width, height), radius, kerf=None, **kwargs):
+    def draw_inside_rect(self, (x, y), (width, height), kerf=None, **kwargs):
         """Draw a rounded rect adjusted for kerf.
 
         Arguments –
             (x, y) – centre of rectangle
             (width, height) – effective dimensions of rectangle
-            radius – of corners
             kerf (optional) – override default kerf value
         """
         self.draw_rect((x, y), (width, height), -(kerf or self.kerf), **kwargs)
@@ -249,17 +248,35 @@ class Plato(object):
                     polygons = [flip_clockwise(zs) for zs in polygons]
             self.draw_switch_polygons(key, polygons, color=color)
 
-    def draw_key_caps(self, keys, color=None):
+    def draw_key_caps(self, keys, kerf=None, color=None):
         """Draw outlines of the key caps."""
+        for polygon in self.key_cap_polygons(keys):
+            self.draw_polygon(polygon, color=(color or self.stroke_alt))
+
+    def draw_key_caps_outline(self, keys, color=None, kerf=None):
+        """Draw the outline of the key caps."""
+        # TODO. This does not work because merge_shapes fails.
+        self.draw_polygon(merge_shapes(*self.key_cap_polygons(keys, kerf=kerf)), color=(color or self.stroke_default))
+
+    def key_cap_polygons(self, keys, kerf=None):
+        """Return sequence of polygomns for the key caps."""
+        k = self.kerf if kerf is None else kerf
         for key in keys:
-            zs = rect_points((0, 0), (key.w * self.unit_mm, key.h * self.unit_mm))
+            zs = rect_points((0, 0), (key.w * self.unit_mm, key.h * self.unit_mm), adjustment=-k)
             if hasattr(key, 'x2'):
                 # Offset of second rect is measured between their top-left corners
                 # in keyboard units, with y downwards.
                 x2 = (0.5 * (key.w2 - key.w) + key.x2 - key.x) * self.unit_mm
                 y2 = (0.5 * (key.h2 - key.h) + key.y2 - key.y) * -self.unit_mm
-                zs = merge_shapes(zs, rect_points((x2, y2), (key.w2 * self.unit_mm, key.h2 * self.unit_mm)))
-            self.draw_polygon(translate(self.key_coords(key), zs), color=(color or self.stroke_alt))
+                zs = merge_shapes(zs, rect_points((x2, y2), (key.w2 * self.unit_mm, key.h2 * self.unit_mm), adjustment=-k))
+            yield translate(self.key_coords(key), zs)
+
+    def draw_inside_case(self, color=None):
+        """Draw the inside of the case layers."""
+        _, (wd, ht) = self.key_bbox()
+        padding_wd, padding_ht = self.padding
+        thickness_wd, thickness_ht = self.case_thickness
+        self.draw_inside_roundrect((0, 0), (wd + 2 * (padding_wd - thickness_wd), ht + 2 * (padding_ht - thickness_ht)), 0.5)
 
     def draw_switch_and_stablizers(self, key, switch_shape, stabilizer_size, color=None):
         """Draw the switch for this key, andits stabilizers if any."""

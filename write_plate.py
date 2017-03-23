@@ -13,7 +13,7 @@ from plato.kle_parser import Key, parse_kle
 
 
 FORMATS = ['svg', 'dxf']
-LAYERS = ['plate', 'under', 'caps', 'clips', 'combined']
+LAYERS = ['plate', 'under', 'caps', 'clips', 'case', 'combined']
 TESTS = ['size']
 
 FORMAT_CLASSES = {
@@ -25,7 +25,7 @@ FORMAT_CLASSES = {
 def write_plate(keys, format, layer, out_file):
     """Write plate with these keys to this file."""
     padding = 4
-    plato = FORMAT_CLASSES[format](out_file, case_thickness=padding, padding=padding, corner_radius=(padding / 2), kerf=0.17)
+    plato = FORMAT_CLASSES[format](out_file, case_thickness=6, padding=padding, corner_radius=(padding / 2), kerf=0.17)
     plato.calculate_layout(keys)
     plato.draw_outside()
     if layer in ['plate', 'combined']:
@@ -37,7 +37,9 @@ def write_plate(keys, format, layer, out_file):
     if layer in ['caps', 'combined', 'clips']:
         plato.draw_screw_heads(8, indent=(padding / 2))
     if layer in ['caps', 'combined']:
-        plato.draw_key_caps(keys)
+        plato.draw_key_caps(keys, kerf=0)
+    if layer in ['case', 'combined']:
+        plato.draw_inside_case()
     plato.draw_screws(8, indent=(padding / 2))
     plato.save()
 

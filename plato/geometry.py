@@ -18,7 +18,7 @@ def adjusted_coords(x, width, adjustment):
     Arguments –
         x – centre point
         width – how far apart the 2 points are
-        adjustment – extra distance t ibe added each end (usually kerf or corner radius)
+        adjustment – extra distance to be added each end (usually kerf or corner radius)
 
     Returns two x-coordinates.
     """
